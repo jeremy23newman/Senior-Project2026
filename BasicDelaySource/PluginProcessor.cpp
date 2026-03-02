@@ -10,23 +10,47 @@
 #include "PluginEditor.h"
 
 //==============================================================================
+juce::AudioProcessorValueTreeState::ParameterLayout
+CircularDelayBufferAudioProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+    
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(
+        "delayTime",
+        "Delay Time",
+        juce::NormalisableRange<float>(0.01f, 2.0f, 0.01f),
+        0.5f));
+
+    
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(
+            "wetDry",
+            "Wet/Dry",
+            juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f),
+            0.5f));
+
+        return { params.begin(), params.end() };
+}
+
 CircularDelayBufferAudioProcessor::CircularDelayBufferAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                     #endif
-                       )
+    : AudioProcessor (BusesProperties()
+    #if ! JucePlugin_IsMidiEffect
+     #if ! JucePlugin_IsSynth
+        .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
+     #endif
+        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
+    #endif
+    ),
 #endif
+      apvts(*this, nullptr, "Parameters", createParameterLayout())
 {
 }
 
 CircularDelayBufferAudioProcessor::~CircularDelayBufferAudioProcessor()
 {
 }
+
+
 
 //==============================================================================
 const juce::String CircularDelayBufferAudioProcessor::getName() const
@@ -134,6 +158,13 @@ void CircularDelayBufferAudioProcessor::processBlock (juce::AudioBuffer<float>& 
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
+    auto wetDry = apvts.getRawParameterValue("wetDry")->load();
+    auto dryGain = 1.0f - wetDry;
+
+    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    {
+        buffer.applyGain(channel, 0, buffer.getNumSamples(), dryGain);
+    }
 
     
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
@@ -180,29 +211,34 @@ void CircularDelayBufferAudioProcessor::fillBuffer(juce::AudioBuffer<float>& buf
         }
     }
 
-void CircularDelayBufferAudioProcessor::readFromBuffer(juce::AudioBuffer<float>& buffer, juce::AudioBuffer<float>& delayBuffer, int channel)
+void CircularDelayBufferAudioProcessor::readFromBuffer(
+    juce::AudioBuffer<float>& buffer,
+    juce::AudioBuffer<float>& delayBuffer,
+    int channel)
 {
     auto bufferSize = buffer.getNumSamples();
     auto delayBufferSize = delayBuffer.getNumSamples();
-    auto readPosition = writePosition - (getSampleRate() * .5f);
-    
-    if(readPosition < 0)
+    auto delayTime = apvts.getRawParameterValue("delayTime")->load();
+    auto delaySamples = (int)(getSampleRate() * delayTime);
+    auto wetDry = apvts.getRawParameterValue("wetDry")->load();
+    auto dryGain = 1.0f - wetDry;
+    auto readPosition = writePosition - delaySamples;
+    if (readPosition < 0)
         readPosition += delayBufferSize;
-    
-    auto g = 0.7f;
-    
-    if(readPosition + bufferSize < delayBufferSize)
+    auto wetGain = 0.7f * wetDry;
+    buffer.applyGain(channel, 0, bufferSize, dryGain);
+
+    if (readPosition + bufferSize < delayBufferSize)
     {
-        buffer.addFromWithRamp(channel, 0, delayBuffer.getReadPointer(channel, readPosition), bufferSize, g, g);
+        buffer.addFromWithRamp(channel,0,delayBuffer.getReadPointer(channel, readPosition),bufferSize,wetGain,wetGain);
     }
-    
     else
     {
-        auto numSumplesToEnd = delayBufferSize - readPosition;
-        buffer.addFromWithRamp(channel, 0, delayBuffer.getReadPointer(channel, readPosition), numSumplesToEnd, g, g);
-        
-        auto numSamplesAtStart = bufferSize - numSumplesToEnd;
-        buffer.addFromWithRamp(channel, numSumplesToEnd, delayBuffer.getReadPointer(channel, 0), numSamplesAtStart, g, g);
+        auto numSamplesToEnd = delayBufferSize - readPosition;
+        buffer.addFromWithRamp(channel,0,delayBuffer.getReadPointer(channel, readPosition),numSamplesToEnd,wetGain,wetGain);
+
+        auto numSamplesAtStart = bufferSize - numSamplesToEnd;
+        buffer.addFromWithRamp(channel,numSamplesToEnd,delayBuffer.getReadPointer(channel, 0),numSamplesAtStart,wetGain,wetGain);
     }
 }
 

@@ -19,6 +19,10 @@ public:
     //==============================================================================
     CircularDelayBufferAudioProcessor();
     ~CircularDelayBufferAudioProcessor() override;
+    
+    static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+    
+    juce::AudioProcessorValueTreeState apvts;
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -52,13 +56,18 @@ public:
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
+    
 
 private:
     juce::AudioBuffer<float> delayBuffer;
     int writePosition { 0 };
     void fillBuffer(juce::AudioBuffer<float>& buffer, int channel);
     void readFromBuffer(juce::AudioBuffer<float>& buffer, juce::AudioBuffer<float>& delayBuffer, int channel);
-    void updateBufferPositions(juce::AudioBuffer<float>& buffer, juce::AudioBuffer<float>& delayBuffer)
+    void updateBufferPositions(juce::AudioBuffer<float>& buffer, juce::AudioBuffer<float>& delayBuffer);
+    
+    
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CircularDelayBufferAudioProcessor)
 };
+

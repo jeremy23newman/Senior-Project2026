@@ -2,7 +2,7 @@
 
 
 ## Overview
-In this project, I will spend the beginning duration creating several basic plugins, like gain, overdrive, bitcrush, delay, and compressor.
+In this project, I will spend the beginning duration creating several basic plugins, like gain, overdrive, bitcrush, delay, and high/low pass filter.
 Then for the final project I will take the basic plugins made and combine into an original plugin utilizing the plugins aforementioned.
 
 ## Technologies Used
@@ -17,7 +17,7 @@ Each effect will be implemented as a standalone plugin:
 - **Gain** – Signal amplitude control and gain staging
 - **Bitcrusher** – Bit depth and sample rate reduction
 - **Delay** – Time-based effect using circular buffers
-- **Compressor** – Simulated acoustic space using delay networks
+- **Filter** – Simulates behaivor of high and low pass filters
 - **Distortion** – Nonlinear waveshaping and harmonic generation
 
 ## Project Timeline
@@ -27,16 +27,15 @@ Each effect will be implemented as a standalone plugin:
 - Review DSP concepts relevant to audio effects
 - Configure development environment (JUCE, Xcode, Logic Pro)
 - Implement Gain plugin
-- Implement Bitcrusher plugin
 - Implement Delay plugin
-- Implement Compressor plugin
-- Implement Distortion plugin
+- Implement Filter plugin
 - Test each plugin independently in Logic Pro
 
 ### Phase 3: Final Multi-Effect Plugin (Weeks 8–15)
+- Implement Bitcrusher plugin
+- Implement Distortion(Overdrive)
 - Integrate all effects into one plugin
-- Optimize performance and stability
-- Implement any other features that would enhance design
+- Design UI
 - Final testing in Logic Pro
 - Bug fixes and performance improvements
 - Documentation and final project submission

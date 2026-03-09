@@ -57,4 +57,4 @@ Low Frequencies: All pass = og signal, adding -> reinforces lows, subtracting ->
 High Frequencies: All pass = inverted signal, adding -> cancels highs, subtracting -> reinforces highs
 
 ## **3/03-3/10**
-+This week focused mainly on creating/designing the presentation and preparing my outline.
++ This week focused mainly on creating/designing the presentation and preparing my outline.

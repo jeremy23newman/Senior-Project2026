@@ -7,6 +7,7 @@ in my own plugin implementations. Finally using past implementations to create m
 
 # **Introduction(1-2 minutes)**
 + Explain application(what an audio plugin is)
++ Explain technologies used
 + Explain DSP specifiically(Sample Rate)
 
 # **Delay Implementation (2-3 minutes)**

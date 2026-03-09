@@ -58,3 +58,6 @@ High Frequencies: All pass = inverted signal, adding -> cancels highs, subtracti
 
 ## **3/03-3/10**
 + This week focused mainly on creating/designing the presentation and preparing my outline.
++ Huge resource for implentation and research:
+  [The Audio Programmer Link](https://www.youtube.com/@TheAudioProgrammer)
+

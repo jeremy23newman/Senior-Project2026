@@ -61,3 +61,40 @@ High Frequencies: All pass = inverted signal, adding -> cancels highs, subtracti
 + Huge resource for implentation and research:
   [The Audio Programmer Link](https://www.youtube.com/@TheAudioProgrammer)
 
+## **3/10-3/17**
++ This week was also mainly focused on the creation of my presentation.
++ I also started to plan the creation of my final plugin, the plugin would incorporate my past
+implementations of delay and filter then also add implementations of overdrive and bitcrush.
+
+
+## **3/17-3/24**
++ This week was spent learning the core DSP concepts behind overdrive and bitcrush.
++ Overdrive: a form of nonlinear signal processing that pushes a signal or series of samples
+behind a threshold to induce clipping or soft saturation which creates harmonic texture.
++ The common DSP function to create overdrive is y[n] = tanh(g*x[n]) where x[n] is the input signal
+and y[n] is the output signal.
++ The heavy lifting done in that equation is the tanh which a hyperbolic tangent function used in DSP to simulate
+smooth clipping.
++ tanh(z) = (e^z - e^-z)/(e^z+e^-z)
++ Bitcrush: distorts the signal by reducing the resolution or bitdepth and often sample rate, introducing
+a grainy, gritty style of sound
++ The key DSP function to create bitcrush is y[n] = 2/2^B * rounded(x[n]/(2/2^B))
++ The B in this formula is what overall changes the tone of the signal the more bits the better resolution and quality of the sound while the fewer bits creates more distortion, manipulating waveforms to produce
+a stepwise signal.
+
+## **3/24-3/31**
++ Start final plugin implementation project.
++ I started coding the Overdrive portion, mainly keeping in mind the core concepts that need to recreated on the signal.
++ I broke the equation into two parts, I implemented g*x[n] as auto x = samples[i] * drive, drive is a controllable the more increased the more distorted the signal.
++ Then I took the hyperbolic tangent function which was represented as tanh(g*x[n]) and there was already a
+method that has this function so it was simply samples[i] = std::tanh(x), which here we are assigning the distorted signal to the array samples passed to the buffer and I am making use of the precalculted x value.
+
+## **3/31-4/06**
++ Focused on coding the Bitcrusher portion, again just taking the core DSP concepts into code that manipulates
+input array of samples.
++ Bitcrush formula like the overdrive was broken up into parts and stored into variables, 2/2^B is represented as
+levels = std::pow(2.0f, bitDepth) where bitDepth is controllable parameter.
++ The higher the bitdepth, the better and cleaner audio and the lower the bitdepth more lo-fi/distorted the signal, this is because bitdepth relates heavily to the amplitude and dynamic range. Where if there isn't enough bits to store the amplitude of the signal they compromise the integrity of the audio which causes a more coarse/jagged waveform.
++ After that I take the levels variable and plug it into the parts of the original DSP function left,
+rounded(x[n]/(2/2^B)) whichh is represented as std::rounded(x * levels) / levels;
++ Note tha x = samnples[i].

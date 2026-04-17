@@ -109,7 +109,7 @@ a bit too aggressive of signal manipulation without it.
 + Input/Output Gain: Adjusts the loudness of the signal coming in and leaving the plugin, this helps
 a lot in combination with overdrive.
 
-## **4/13-4/20
+## **4/13-4/20**
 + I dealt with a pretty big bug inside of my delay implementation, which stemmed from the original
 implementation sent some of the input signal back into the buffer.
 + Since delay is the last effect in the stack it is influenced by the overdrive which can

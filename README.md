@@ -31,7 +31,7 @@ Each effect will be implemented as a standalone plugin:
 - Implement Filter plugin
 - Test each plugin independently in Logic Pro
 
-### Phase 3: Final Multi-Effect Plugin (Weeks 8–15)
+### Phase 2: Final Multi-Effect Plugin (Weeks 8–15)
 - Implement Bitcrusher plugin
 - Implement Distortion(Overdrive)
 - Integrate all effects into one plugin
@@ -39,6 +39,9 @@ Each effect will be implemented as a standalone plugin:
 - Final testing in Logic Pro
 - Bug fixes and performance improvements
 - Documentation and final project submission
+
+### SYSTEM DESIGN DIAGRAM
+![System Design Diagram](SystemDesign.png)
 
 ## Author
 **JEREMY NEWMAN**

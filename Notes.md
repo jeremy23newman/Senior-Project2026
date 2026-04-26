@@ -98,3 +98,22 @@ levels = std::pow(2.0f, bitDepth) where bitDepth is controllable parameter.
 + After that I take the levels variable and plug it into the parts of the original DSP function left,
 rounded(x[n]/(2/2^B)) whichh is represented as std::rounded(x * levels) / levels;
 + Note tha x = samnples[i].
+
+## **4/06-4/13**
++ This week I mainly took half the time designing my user interface for the plugin.
++ Adding knobs for bitcrush, delay, and overdrive then a slider for the filter.
++ I also incorporated some quality of life simple controls like master mix, input gain and output gain.
++ Master Mix: (WET/DRY) the wet signal is the changed signal, the dry signal is the original signal,
+I allowed a control for it, because during implementation the combination of all these effects can be
+a bit too aggressive of signal manipulation without it.
++ Input/Output Gain: Adjusts the loudness of the signal coming in and leaving the plugin, this helps
+a lot in combination with overdrive.
+
+## **4/13-4/20**
++ I dealt with a pretty big bug inside of my delay implementation, which stemmed from the original
+implementation sent some of the input signal back into the buffer.
++ Since delay is the last effect in the stack it is influenced by the overdrive which can
+boost the original signal beyond a listenable amount.
++ I simply changed the implementation to send a pure wet signal and have a feedback control that indicates
+the intensity.
++ I also worked on changing the UI to fit the new knobs that influence the mastermix and different gains.
